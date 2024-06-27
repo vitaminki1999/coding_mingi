@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>센서 데이터 그래프</title>
+    <!-- Chart.js CDN 추가 -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        /*버튼 만들기*/
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        .header {
+            background-color: #f1f1f1;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .button-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 40px;
+            margin-bottom: 40px;
+        }
+
+        .button-container a {
+            margin: 0 0px;
+            padding: 8px 50px;
+            text-decoration: none;
+            background-color: #0c5497;
+            color: white;
+            border-radius: 0px;
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+        }
+
+        .chart-container {
+            display: flex;
+            flex-wrap: wrap;
+            padding:20px;
+        }
+
+        .chart-item {
+            width: 50%; /* 한 줄에 2개의 차트를 표시하므로 50%의 너비 할당 */
+            
+        }
+        .container{
+            text-align: center;
+            background-color: #7db3e6;
+            color:white;
+            padding: 10 10px;
+            margin: 0 20px;
+        }
+
+        /* 제목 디자인 */
+        .img-fluid {
+            margin-top: 20px;
+        }
+        .header h1 {
+        padding-left: 20px; /* 왼쪽 여백 설정 */
+        font-family: Arial, sans-serif; /* 전체 헤더 폰트 설정 */
+        color: rgb(0, 0, 5); /* 전체 헤더 색상 설정 */
+        font-size: 2.5vw;
+        }
+        .button-container a {
+          font-size: clamp(5px, 2.5vw, 20px); /* vw 단위로 글꼴 크기 설정 */
+          padding: 5px 25px;
+          line-height: 1;
+        }
+        @media (max-width: 768px) { /* 화면 너비가 768px 이하일 때 */
+          .header h1 {
+            font-size: 4vw; /* 글꼴 크기를 더 작게 조정 */
+          }
+          .button-container a {
+            font-size: 2.5vw;
+          }
+          .header h1::first-line {
+            font-size: 1vw; /* 글꼴 크기를 더 작게 조정 */
+          }
+          .header h1::first-line + br {
+            font-size: 1vw; /* 글꼴 크기를 더 작게 조정 */
+          }
+        }
+
+        /* 첫 번째 줄 스타일 */
+        .header h1::first-line {
+            font-size: 40px; /* 첫 번째 줄 글자 크기 */
+            font-weight: bold; /* 첫 번째 줄 글자 굵기 */
+            color: rgb(0, 112, 192); /* 첫 번째 줄 글자 색상 */
+            font-size: 2.7vw;
+            
+        }
+
+        /* 두 번째 줄 스타일 */
+        .header h1::first-line + br {
+            font-size: 10px;
+            font-style: italic; /* 두 번째 줄 글자 이탤릭체로 설정 */
+            font-size: 2.7vw;
+        }
+        .b{
+            border: solid 1px black;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="header">
+        <div style="display: flex;">
+            
+            <h1>코마(Coding Magic)<br>세명대학교 전자공학과</h1>
+            <div class="button-container">
+                <a href="soge.ejs">소개</a>
+                <a href="index.ejs">그래프 분석</a>
+                <a href="b2.html">방문 현황</a>
+                <a href="b3.html">1:1 채팅</a>
+        </div>
+      </div>
+        
+    </div>
+    
+    <div class="chart-container b">
+        <canvas id="temperatureChart"></canvas>
+        <div id="demo">
+          <% data.forEach(row => { %>
+            <p><%= row.time %> - <%= row.temperatur %>도</p> 
+          <% }) %>
+        </div>
+    </div>
+
+    <script>
+        const ctx = document.getElementById('temperatureChart').getContext('2d');
+    const labels = <%- JSON.stringify(data.map(row => row.time).reverse()) %>;
+    const temperatures = <%- JSON.stringify(data.map(row => row.temperatur).reverse()) %>;
+    
+    const graphButton1 = document.querySelector('a[href="index.ejs"]'); // 그래프 분석 버튼 선택
+    graphButton1.addEventListener('click', (event) => {
+      event.preventDefault(); // 기본 링크 동작 방지
+      window.location.href = 'http://172.16.20.216:3000/'; // localhost:3000/으로 이동
+    });
+
+    const graphButton2 = document.querySelector('a[href="soge.ejs"]'); // 그래프 분석 버튼 선택
+    graphButton2.addEventListener('click', (event) => {
+      event.preventDefault(); // 기본 링크 동작 방지
+      window.location.href = 'http://172.16.20.216:3000/soge'; // localhost:3000/으로 이동
+    });
+
+    new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: labels,
+        datasets: [{
+          label: '온도',
+          data: temperatures,
+          borderColor: 'rgb(75, 192, 192)',
+          tension: 0.1
+        }]
+      },
+      options: {
+        scales: {
+          y: {
+            beginAtZero: true
+          }
+        }
+      }
+    }); 
+        
+    </script>
+</body>
+
+</html>
